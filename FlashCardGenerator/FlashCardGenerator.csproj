@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>aspnet-FlashCardGenerator-326F433B-9F52-4917-9AEF-EF255C547C9F</UserSecretsId>
+        <ContainerRepository>flashcardgenerator</ContainerRepository>
     </PropertyGroup>
 
     <ItemGroup>
