@@ -42,9 +42,9 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+string openAiApiKey = string.Empty;
 if (builder.Environment.IsDevelopment())
 {
-
   // If in development, configure OpenAiOptions using the user secrets.
   builder.Services.Configure<OpenAiOptions>(builder.Configuration.GetSection("OpenAi"));
 }
@@ -57,11 +57,13 @@ else
   var openAiOptions = new OpenAiOptions{
     ApiKey = secret.Value.Value
   };
+  openAiApiKey = secret.HasValue ? secret.Value.Value : throw new InvalidOperationException("OpenAI API key not found in Azure Key Vault.");
 
   builder.Services.AddSingleton(openAiOptions);
 }
 
 var app = builder.Build();
+app.MapGet("/ApiKey", () => openAiApiKey);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
