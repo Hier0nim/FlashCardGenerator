@@ -1,0 +1,9 @@
+@page "/ApiKey"
+@using Microsoft.Extensions.Options
+@using FlashCardGenerator.Options
+@inject IOptions<OpenAiOptions> openAiOptions
+<h3>ApiKey: @openAiOptions.Value.ApiKey</h3>
+
+@code {
+
+}

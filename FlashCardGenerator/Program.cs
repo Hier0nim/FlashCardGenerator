@@ -1,9 +1,13 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Core;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FlashCardGenerator.Components;
 using FlashCardGenerator.Components.Account;
 using FlashCardGenerator.Data;
+using FlashCardGenerator.Options;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +42,25 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+if (builder.Environment.IsDevelopment())
+{
+
+  // If in development, configure OpenAiOptions using the user secrets.
+  builder.Services.Configure<OpenAiOptions>(builder.Configuration.GetSection("OpenAi"));
+}
+else
+{
+  // If in production, manually retrieve the OpenAI API key from Azure Key Vault.
+  const string kvUri = "https://kv-flashcardgenerator.vault.azure.net/";
+  var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+  var secret = client.GetSecret("OpenAi--ApiKey");
+  var openAiOptions = new OpenAiOptions{
+    ApiKey = secret.Value.Value
+  };
+
+  builder.Services.AddSingleton(openAiOptions);
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,7 +71,6 @@ if (app.Environment.IsDevelopment())
 else
 {
   app.UseExceptionHandler("/Error", createScopeForErrors: true);
-  // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
   app.UseHsts();
 }
 
@@ -60,7 +82,6 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
   .AddInteractiveServerRenderMode();
 
-// Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
 app.Run();
