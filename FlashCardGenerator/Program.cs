@@ -42,7 +42,6 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-string openAiApiKey = string.Empty;
 if (builder.Environment.IsDevelopment())
 {
   // If in development, configure OpenAiOptions using the user secrets.
@@ -54,16 +53,13 @@ else
   const string kvUri = "https://kv-flashcardgenerator.vault.azure.net/";
   var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
   var secret = client.GetSecret("OpenAi--ApiKey");
-  var openAiOptions = new OpenAiOptions{
-    ApiKey = secret.Value.Value
-  };
-  openAiApiKey = secret.HasValue ? secret.Value.Value : throw new InvalidOperationException("OpenAI API key not found in Azure Key Vault.");
 
-  builder.Services.AddSingleton(openAiOptions);
+  builder.Services.Configure<OpenAiOptions>(options => {
+    options.ApiKey = secret.Value.Value;
+  });
 }
 
 var app = builder.Build();
-app.MapGet("/ApiKey", () => openAiApiKey);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
