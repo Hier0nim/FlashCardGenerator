@@ -1,4 +1,4 @@
-.login-page {
+.register-page {
     position: relative;
     height: 100vh;
     display: flex;
@@ -9,7 +9,7 @@
     font-size: 1.4em;
 }
 
-.login-content {
+.register-content {
     max-width: 90%;
     width: 400px;
     margin: auto;
