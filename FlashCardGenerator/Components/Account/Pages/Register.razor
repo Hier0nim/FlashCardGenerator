@@ -24,7 +24,6 @@
     </div>
 
     <div class="row">
-      <StatusMessage Message="@Message"/>
       <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
         <DataAnnotationsValidator/>
         <ValidationSummary class="text-danger" role="alert"/>

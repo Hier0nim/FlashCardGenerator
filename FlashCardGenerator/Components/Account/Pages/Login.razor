@@ -20,7 +20,6 @@
     </div>
     <div class="row">
       <section>
-        <StatusMessage Message="@_errorMessage"/>
         <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
           <DataAnnotationsValidator/>
           <ValidationSummary class="text-danger" role="alert"/>
