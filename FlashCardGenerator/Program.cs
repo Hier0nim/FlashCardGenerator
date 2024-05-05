@@ -44,7 +44,6 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 
 if (builder.Environment.IsDevelopment())
 {
-
   // If in development, configure OpenAiOptions using the user secrets.
   builder.Services.Configure<OpenAiOptions>(builder.Configuration.GetSection("OpenAi"));
 }
@@ -54,11 +53,10 @@ else
   const string kvUri = "https://kv-flashcardgenerator.vault.azure.net/";
   var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
   var secret = client.GetSecret("OpenAi--ApiKey");
-  var openAiOptions = new OpenAiOptions{
-    ApiKey = secret.Value.Value
-  };
 
-  builder.Services.AddSingleton(openAiOptions);
+  builder.Services.Configure<OpenAiOptions>(options => {
+    options.ApiKey = secret.Value.Value;
+  });
 }
 
 var app = builder.Build();
