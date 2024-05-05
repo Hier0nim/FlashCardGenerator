@@ -1,17 +1,24 @@
 ﻿@inherits LayoutComponentBase
 
 <MudThemingProvider/>
-<MudLayout>
-  <MudAppBar Elevation="1">
-    <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
-  </MudAppBar>
-  <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-    <NavMenu/>
-  </MudDrawer>
-  <MudMainContent Class="mt-16 pa-4">
+<AuthorizeView>
+  <Authorized>
+    <MudLayout>
+      <MudAppBar Elevation="1">
+        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+      </MudAppBar>
+      <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu/>
+      </MudDrawer>
+      <MudMainContent Class="mt-16 pa-4">
+        @Body
+      </MudMainContent>
+    </MudLayout>
+  </Authorized>
+  <NotAuthorized>
     @Body
-  </MudMainContent>
-</MudLayout>
+  </NotAuthorized>
+</AuthorizeView>
 
 @code {
   private bool _drawerOpen = true;
