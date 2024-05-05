@@ -6,10 +6,10 @@ namespace FlashCardGenerator.Options;
 public class OpenAiOptions
 {
   /// <summary>
-  /// Gets the API key for accessing OpenAI services.
+  /// Gets or sets the API key for accessing OpenAI services.
   /// </summary>
   /// <value>
   /// The API key used for authenticating requests to OpenAI.
   /// </value>
-  public required string ApiKey { get; init; }
+  public required string ApiKey { get; set; }
 }
