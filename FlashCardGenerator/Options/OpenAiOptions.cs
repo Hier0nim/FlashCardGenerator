@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace FlashCardGenerator.Options;
 
 /// <summary>
@@ -5,11 +7,12 @@ namespace FlashCardGenerator.Options;
 /// </summary>
 public class OpenAiOptions
 {
-  /// <summary>
-  /// Gets or sets the API key for accessing OpenAI services.
-  /// </summary>
-  /// <value>
-  /// The API key used for authenticating requests to OpenAI.
-  /// </value>
-  public required string ApiKey { get; set; }
+    /// <summary>
+    /// Gets or sets the API key for accessing OpenAI services.
+    /// </summary>
+    /// <value>
+    /// The API key used for authenticating requests to OpenAI.
+    /// </value>
+    [Required]
+    public required string ApiKey { get; set; }
 }

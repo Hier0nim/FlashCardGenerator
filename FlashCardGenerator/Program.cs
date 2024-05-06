@@ -35,7 +35,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
                                                       options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentityCore<ApplicationUser>(options =>
+  {
+    options.SignIn.RequireConfirmedAccount = true;
+    options.User.RequireUniqueEmail = true;
+  })
   .AddEntityFrameworkStores<ApplicationDbContext>()
   .AddSignInManager()
   .AddDefaultTokenProviders();
@@ -46,16 +50,27 @@ if (builder.Environment.IsDevelopment())
 {
   // If in development, configure OpenAiOptions using the user secrets.
   builder.Services.Configure<OpenAiOptions>(builder.Configuration.GetSection("OpenAi"));
+  builder.Services.Configure<EMailOptions>(builder.Configuration.GetSection("EMail"));
+  builder.Services.Configure<CommunicationServiceOptions>(builder.Configuration.GetSection("CommunicationService"));
 }
 else
 {
-  // If in production, manually retrieve the OpenAI API key from Azure Key Vault.
-  const string kvUri = "https://kv-flashcardgenerator.vault.azure.net/";
-  var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
-  var secret = client.GetSecret("OpenAi--ApiKey");
-
+  var keyVaultConfig = builder.Configuration.GetSection("AzureKeyVault").Get<AzureKeyVaultOptions>();
+  var client = new SecretClient(new Uri(keyVaultConfig!.Uri), new DefaultAzureCredential());
+  
+  var openAiApiKeySecret = client.GetSecret("OpenAi--ApiKey");
   builder.Services.Configure<OpenAiOptions>(options => {
-    options.ApiKey = secret.Value.Value;
+    options.ApiKey = openAiApiKeySecret.Value.Value;
+  });
+  
+  var eMailSecret = client.GetSecret("EMail--DomainName");
+  builder.Services.Configure<EMailOptions>(options => {
+    options.DomainName = eMailSecret.Value.Value;
+  });
+  
+  var communicationServiceSecret = client.GetSecret("CommunicationService--ConnectionString");
+  builder.Services.Configure<CommunicationServiceOptions>(options => {
+    options.ConnectionString = communicationServiceSecret.Value.Value;
   });
 }
 
