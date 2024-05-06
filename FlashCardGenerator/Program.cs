@@ -8,7 +8,7 @@ using FlashCardGenerator.Components.Account;
 using FlashCardGenerator.Data;
 using FlashCardGenerator.Options;
 using FlashCardGenerator.Services;
-using FlashCardGenerator.Services.Contracts;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using MudBlazor.Services;
 
 var applicationBuilder = WebApplication.CreateBuilder(args);
@@ -77,7 +77,7 @@ void ConfigureDatabaseServices(WebApplicationBuilder builder)
 
 void ConfigureApplicationServices(WebApplicationBuilder builder)
 {
-    builder.Services.AddScoped<IEmailClient, AzureCommunicationServiceEmailClient>();
+    builder.Services.AddScoped<IEmailSender, AzureCommunicationServiceEmailClient>();
     builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 }
 

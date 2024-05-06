@@ -1,6 +1,6 @@
 using Azure.Communication.Email;
 using FlashCardGenerator.Options;
-using FlashCardGenerator.Services.Contracts;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 
 namespace FlashCardGenerator.Services
@@ -8,7 +8,7 @@ namespace FlashCardGenerator.Services
     /// <summary>
     /// Provides email sending capabilities via Azure Communication Services.
     /// </summary>
-    public class AzureCommunicationServiceEmailClient : IEmailClient
+    public class AzureCommunicationServiceEmailClient : IEmailSender
     {
         private readonly EmailClient _mailClient;
         private readonly EMailOptions _emailOptions;
@@ -26,12 +26,24 @@ namespace FlashCardGenerator.Services
             ILogger<AzureCommunicationServiceEmailClient> logger)
         {
             _emailOptions = emailOptions.Value;
-            _logger = logger;
             _mailClient = new EmailClient(acsOptions.Value.ConnectionString);
+            _logger = logger;
         }
 
         /// <summary>
         /// Sends an email message asynchronously using Azure Communication Services.
+        /// </summary>
+        /// <param name="email">Recipient email address.</param>
+        /// <param name="subject">Subject of the email.</param>
+        /// <param name="htmlMessage">HTML body content of the email.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public Task SendEmailAsync(string email, string subject, string htmlMessage)
+        {
+            return SendEmailAsync(email, subject, htmlMessage, null);
+        }
+
+        /// <summary>
+        /// Sends an email message asynchronously with support for HTML and plain text content.
         /// </summary>
         /// <param name="toMailAddress">Recipient email address.</param>
         /// <param name="subject">Subject of the email.</param>
@@ -39,8 +51,8 @@ namespace FlashCardGenerator.Services
         /// <param name="plainTextContent">Optional plain text content.</param>
         /// <param name="ct">Cancellation token to cancel the operation if needed.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SendEmailAsync(string toMailAddress, string subject, string htmlBody,
-            string? plainTextContent = null, CancellationToken ct = default)
+        private async Task SendEmailAsync(string toMailAddress, string subject, string htmlBody,
+            string? plainTextContent, CancellationToken ct = default)
         {
             var fromAddress = _emailOptions.DomainName;
             try
