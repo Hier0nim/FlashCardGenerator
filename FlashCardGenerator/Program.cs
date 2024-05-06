@@ -7,6 +7,8 @@ using FlashCardGenerator.Components;
 using FlashCardGenerator.Components.Account;
 using FlashCardGenerator.Data;
 using FlashCardGenerator.Options;
+using FlashCardGenerator.Services;
+using FlashCardGenerator.Services.Contracts;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +23,8 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+builder.Services.AddScoped<IEmailClient, AzureCommunicationServiceEmailClient>();
 
 builder.Services.AddAuthentication(options => {
     options.DefaultScheme = IdentityConstants.ApplicationScheme;
