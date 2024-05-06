@@ -6,19 +6,21 @@ This project uses .NET user secrets to manage sensitive information during devel
 
 Email Domain Name:
 Navigate to your project directory and run the following command to set the email domain name:
-    ```bash
-    dotnet user-secrets set "Email:DomainName" "your-domain-name-here"
+```bash
+dotnet user-secrets set "Email:DomainName" "your-domain-name-here"
+```
 
 Communication Service Connection String:
 Set the connection string for the communication service by executing:
-    ```bash
-    dotnet user-secrets set "CommunicationService:ConnectionString" "your-connection-string-here"
+```bash
+dotnet user-secrets set "CommunicationService:ConnectionString" "your-connection-string-here"
+```
 
 OpenAI API Key:
 To integrate OpenAI services, store the API key as follows:
-
-    ```bash
-    dotnet user-secrets set "OpenAI:ApiKey" "your-api-key-here"
+```bash
+dotnet user-secrets set "OpenAI:ApiKey" "your-api-key-here"
+```
 
 ## Production Environment Setup
 
