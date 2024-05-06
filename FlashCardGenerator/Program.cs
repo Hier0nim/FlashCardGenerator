@@ -77,8 +77,8 @@ void ConfigureDatabaseServices(WebApplicationBuilder builder)
 
 void ConfigureApplicationServices(WebApplicationBuilder builder)
 {
-    builder.Services.AddScoped<IEmailSender, AzureCommunicationServiceEmailClient>();
-    builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+    builder.Services.AddSingleton<IEmailSender, AzureCommunicationServiceEmailClient>();
+    builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityEmailSender>();
 }
 
 void ConfigureEnvironmentSpecificServices(WebApplicationBuilder builder)
