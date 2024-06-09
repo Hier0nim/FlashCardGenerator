@@ -1,13 +1,10 @@
 ﻿@page "/Account/RegisterConfirmation"
+@attribute [AllowAnonymous]
 
-@using System.Text
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.WebUtilities
 @using FlashCardGenerator.Data
 
 @inject UserManager<ApplicationUser> UserManager
-@inject IEmailSender<ApplicationUser> EmailSender
-@inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
 <PageTitle>Register confirmation</PageTitle>
