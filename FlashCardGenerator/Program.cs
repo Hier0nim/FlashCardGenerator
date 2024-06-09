@@ -2,7 +2,6 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using FlashCardGenerator.Components;
 using FlashCardGenerator.Components.Account;
 using FlashCardGenerator.Data;
@@ -32,7 +31,7 @@ void ConfigureServices(WebApplicationBuilder builder)
     ConfigureIdentityServices(builder);
 
     // Database services
-    ConfigureDatabaseServices(builder);
+    builder.Services.AddDatabase(builder.Configuration);
 
     // Custom application services
     ConfigureApplicationServices(builder);
@@ -63,16 +62,6 @@ void ConfigureIdentityServices(WebApplicationBuilder builder)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
-}
-
-void ConfigureDatabaseServices(WebApplicationBuilder builder)
-{
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                          ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                                                        options.UseSqlite(connectionString));
-    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 }
 
 void ConfigureApplicationServices(WebApplicationBuilder builder)
@@ -118,6 +107,8 @@ void ConfigureSecrets(SecretClient client, WebApplicationBuilder builder)
 
 void ConfigurePipeline(WebApplication app)
 {
+    app.InitializeDatabase();
+    
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
